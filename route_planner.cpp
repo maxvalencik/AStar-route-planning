@@ -11,15 +11,14 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
 
     // Use the m_Model.FindClosestNode method to find the closest nodes to the starting and ending coordinates.
     // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
-    start_node = &m_Model.FindClosestNode(start_x, start_y);
-    end_node = &m_Model.FindClosestNode(end_x, end_y);
+    start_node = &(m_Model.FindClosestNode(start_x, start_y));
+    end_node = &(m_Model.FindClosestNode(end_x, end_y));
 }
 
 
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
     //You can use the distance to the end_node for the h value.
-    float h = node->distance(*end_node); //-> access distance method for pointer node (usually . when not a pointer)
-    return h;
+    return node->distance(*end_node); //-> access distance method for pointer node (usually . when not a pointer)
 }
 
 
@@ -63,7 +62,7 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
 
     //going back up the chain of parents until the starting node (no parents)
     while (current_node->parent != nullptr) {
-      //add node to the path by the end to get final vector in order from start to finish
+      //add node to the path by the end
       path_found.push_back(*current_node);
       //add the distance from the node to its parent to the distance variable.
       distance += current_node->distance(*(current_node->parent));
@@ -72,6 +71,9 @@ std::vector<RouteModel::Node> RoutePlanner::ConstructFinalPath(RouteModel::Node 
     }
     // add last node
     path_found.push_back(*current_node); 
+    //reverse the nodes to get the path in order
+    std::reverse(path_found.begin(), path_found.end());
+
 
     distance *= m_Model.MetricScale(); // Multiply the distance by the scale of the map to get meters.
     return path_found;

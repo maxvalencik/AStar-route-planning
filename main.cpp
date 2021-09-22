@@ -32,8 +32,8 @@ static std::optional<std::vector<std::byte>> ReadFile(const std::string &path)
 int main(int argc, const char **argv)
 {    
     std::string osm_data_file = "";
-    if( argc > 1 ) {
         for( int i = 1; i < argc; ++i )
+    if( argc > 1 ) {
             if( std::string_view{argv[i]} == "-f" && ++i < argc )
                 osm_data_file = argv[i];
     }
@@ -58,8 +58,17 @@ int main(int argc, const char **argv)
     // user input for these values using std::cin. Pass the user input to the
     // RoutePlanner object below
     float start_x, start_y, end_x, end_y;
-    cout << "Enter Start X, Start Y, End X, End Y:" << "\n";
+    cout << "Enter start X, start Y, end X, end Y (int between 0 and 100):" << "\n";
     cin >> start_x >> start_y >> end_x >> end_y;
+    //put the input values in an array
+    int input [4]={start_x, start_y, end_x, end_y};
+    //loop through the array to check all values are bewteen 0 and 100
+    for (int value: input){
+        if (value<0 || value>100){
+            cout << "Please enter only int values between 0 and 100 for starting X, Y and ending X, Y: ";
+             cin >> start_x >> start_y >> end_x >> end_y;
+        }
+    }
 
     // Build Model.
     RouteModel model{osm_data};
